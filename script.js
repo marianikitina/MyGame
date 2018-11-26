@@ -52,7 +52,7 @@ function fillMatrix() {
   var matrix = document.getElementById("grid");
   for (i = 0; i < 8; i++) {
     var newRow = createRow("justify-content-md-center");
-    for (j = 0; j < 8; j++) {
+    for (j = 0; j < 3; j++) {
       newRow.appendChild(createDefaultButton(i, j));
     }
     matrix.appendChild(newRow);
@@ -79,16 +79,18 @@ function fillAllRandom() { //sample function 1
 //MY CHANGES
 function drop() { //sample function 2
   for (i = 7; i > 0; i--) {
-    for (j = 0; j < 8; j++) {
+    for (j = 0; j < 3; j++) {
       setButtonColor(i, j, getButtonColor(i-1, j));
-      setButtonText(i, j, getButtonText(i-1, j));
     }
   }
   //for row 0
-    for (j = 0; j < 8; j++) {
+    for (j = 0; j < 3; j++) {
       setButtonColor(i, j, getRandomColor());
-      setButtonText(i, j, getRandomNumber(1, 10));
     }
+}
+function autoDrop() {
+  drop();
+  setTimeout(autoDrop,5000);
 }
 
 function defile(number) { //sample function 3 (recursion and time)
@@ -123,7 +125,8 @@ function f1() {
 
 function f2() {
   setStatusText("Drop everything by 1 row");
-  drop();
+  //drop();
+  autoDrop();
 }
 
 function f3() {
@@ -174,7 +177,7 @@ function setProgressBar(bar_id, color, value) {
 function createDefaultButton() {
   var button = document.createElement("div");
   button.className = "thumbnail";
-  button.setAttribute("onclick", "buttonClicked("+i+","+j+")");
+ // button.setAttribute("onclick", "buttonClicked("+i+","+j+")");
 
   //the image part
   var img = document.createElement("img");
@@ -218,15 +221,12 @@ function getButtonText(i, j) {
 
 function getRandomColor() {
   //you might want to change this to get more colors
-  var random = Math.floor(Math.random() * 4);
+  var random = Math.floor(Math.random() * 2);
   if (random < 1) {
-    return "red";
-  } else if (random < 2) {
+    return "white";
+  } else  {
     return "green";
-  } else if (random < 3) {
-    return "turquoise";
-  }
-  return "yellow";
+  } 
 }
 
 function getRandomNumber(min, max) {
