@@ -6,6 +6,7 @@ function setup() { //initialize everything
   fillStatusText();
   fillProgressBar();
   fillMatrix();
+  _addEventListener('keydown', document, handleKeyboardEvent);
   setStatusText("Loaded succesfully!", "text-bold" );
 }
 
@@ -51,8 +52,13 @@ function fillProgressBar() {
 function fillMatrix() {
   var matrix = document.getElementById("grid");
   for (i = 0; i < 8; i++) {
+    if(i == 7){
+      var newRow = createRow("justify-content-md-center border border-top border border-warning mt-3");
+    }
+    else{
     var newRow = createRow("justify-content-md-center");
-    for (j = 0; j < 8; j++) {
+    }
+    for (j = 0; j < 3; j++) {
       newRow.appendChild(createDefaultButton(i, j));
     }
     matrix.appendChild(newRow);
@@ -79,16 +85,35 @@ function fillAllRandom() { //sample function 1
 //MY CHANGES
 function drop() { //sample function 2
   for (i = 7; i > 0; i--) {
-    for (j = 0; j < 8; j++) {
+    for (j = 0; j < 3; j++) {
       setButtonColor(i, j, getButtonColor(i-1, j));
-      setButtonText(i, j, getButtonText(i-1, j));
     }
   }
   //for row 0
-    for (j = 0; j < 8; j++) {
+    for (j = 0; j < 3; j++) {
       setButtonColor(i, j, getRandomColor());
-      setButtonText(i, j, getRandomNumber(1, 10));
     }
+}
+function autoDrop() {
+  var numOfRows = 1;
+  rowsOfWhite(numOfRows);
+  setTimeout(drop,500);
+
+  setTimeout(autoDrop,1000);
+}
+
+function rowsOfWhite(num){
+for(m = 0; m<num; m++){
+ for (i = 7; i > 0; i--) {
+    for (j = 0; j < 3; j++) {
+      setButtonColor(i, j, getButtonColor(i-1, j));
+    }
+  }
+  for (j = 0; j < 3; j++) {
+      setButtonColor(i, j,"white");
+    }
+      //wirte three rows after 
+}
 }
 
 function defile(number) { //sample function 3 (recursion and time)
@@ -123,7 +148,8 @@ function f1() {
 
 function f2() {
   setStatusText("Drop everything by 1 row");
-  drop();
+  //drop();
+  autoDrop();
 }
 
 function f3() {
@@ -174,7 +200,7 @@ function setProgressBar(bar_id, color, value) {
 function createDefaultButton() {
   var button = document.createElement("div");
   button.className = "thumbnail";
-  button.setAttribute("onclick", "buttonClicked("+i+","+j+")");
+ // button.setAttribute("onclick", "buttonClicked("+i+","+j+")");
 
   //the image part
   var img = document.createElement("img");
@@ -218,15 +244,12 @@ function getButtonText(i, j) {
 
 function getRandomColor() {
   //you might want to change this to get more colors
-  var random = Math.floor(Math.random() * 4);
+  var random = Math.floor(Math.random() * 2);
   if (random < 1) {
-    return "red";
-  } else if (random < 2) {
+    return "white";
+  } else  {
     return "green";
-  } else if (random < 3) {
-    return "turquoise";
-  }
-  return "yellow";
+  } 
 }
 
 function getRandomNumber(min, max) {
@@ -268,4 +291,41 @@ function buttonClicked(i, j) { //this is where you should start
   //increase the progress bar a bit
   progress += textValue;
   setProgressBar("bar", "bg-success", progress);
+}
+
+var Key = {
+  LEFT:   37,
+  UP:     38,
+  RIGHT:  39,
+  DOWN:   40
+};
+
+
+function _addEventListener(evt, element, fn) {
+  if (window.addEventListener) {
+    element.addEventListener(evt, fn, false);
+  }
+  else {
+    element.attachEvent('on'+evt, fn);
+  }
+}
+
+function handleKeyboardEvent(evt) {
+  if (!evt) {evt = window.event;} // for old IE compatible
+  var keycode = evt.keyCode || evt.which; // also for cross-browser compatible
+
+  
+  switch (keycode) {
+    case Key.LEFT:
+      setButtonColor(6,0,"white");
+      break;
+    case Key.UP:
+       setButtonColor(6,1,"white");
+      break;
+    case Key.RIGHT:
+       setButtonColor(6,2,"white");
+      break;
+    default:
+      info.innerHTML += "SOMEKEY ";
+  }
 }
