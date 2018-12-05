@@ -1,6 +1,37 @@
+Matthews-MacBook-Pro-3.local (12:05 AM):
 var clickHistory = [];
 var progress;
+var life = 100;
+var levels = 1;
+var difficulty = 5500;
+var isRunning = false;
 
+function updateProgressBar(){
+ setProgressBar("bar", "bg-success", life);
+}
+
+function increaseLevel()
+{
+  level ++;
+  difficulty = difficulty - 500;
+}
+function timer(){
+  var start = 0;
+  var repeat = setInterval(function(){
+    if(!isRunning)
+    { console.log()
+      clearInterval(repeat);
+      return;
+    }
+    if(start == 5)
+     {setStatusText("You win");
+      isRunnning = false;
+      clearInterval(repeat);
+       return;} 
+       setStatusText(start);
+    start = start+1;
+  },1000);
+}
 function setup() { //initialize everything
   fillFunctionButtons();
   fillStatusText();
@@ -95,11 +126,41 @@ function drop() { //sample function 2
     }
 }
 function autoDrop() {
+  console.log(isRunning);
+  if(!isRunning)
+  {
+  return;
+  }
+  else{
+  updateProgressBar();
   var numOfRows = 1;
   rowsOfWhite(numOfRows);
   setTimeout(drop,500);
-
-  setTimeout(autoDrop,1000);
+  for(i = 0; i < 3; i++)
+  {
+  if(getButtonColor(7,i) == "green")
+  {
+    if(life != 0)
+    {
+      //setStatusText("Missed one. Lives left : " + life/10)
+      life = life - 10;
+      updateProgressBar();
+    }
+    else
+    {
+      setStatusText("You Lose");
+      updateProgressBar(); 
+      isRunning = false;
+      level = 1;
+      difficulty = 5500;
+      life=100;
+      return;
+    }
+  
+   
+  }
+  }
+  setTimeout(autoDrop,1000);}
 }
 
 function rowsOfWhite(num){
@@ -147,9 +208,13 @@ function f1() {
 }
 
 function f2() {
-  setStatusText("Drop everything by 1 row");
+  //setStatusText("Drop everything by 1 row");
   //drop();
-  autoDrop();
+  if(!isRunning){
+  isRunning = true;
+
+  timer();
+  autoDrop();}
 }
 
 function f3() {
@@ -325,7 +390,8 @@ function handleKeyboardEvent(evt) {
     case Key.RIGHT:
        setButtonColor(6,2,"white");
       break;
-    default:
-      info.innerHTML += "SOMEKEY ";
+    
+      
+     
   }
 }
